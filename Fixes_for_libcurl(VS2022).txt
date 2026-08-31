@@ -1,0 +1,95 @@
+Incase of Trunk2016 Fails:
+
+1. Right Click Libcurl then press Properties and Ensure the Comfiguration is Active(DLL Release - DLL OpenSSl)
+and Platform is Active(Win32)
+
+2. Click VC++ Directories
+
+3. Find Include Directories
+
+4. Paste this: B:\Trunk2016\Contribs\openssl\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);
+
+(Now you'll have 6 Errors instead of 52)
+
+1. Right-Click Libcurl again and go to Properties
+
+2. Ensure the top-left corner of the Properties window says Configuration: Release and Platform: Win32 [1.3].
+
+3. Click VC++ Directories
+
+4. Look for Include Directories
+
+5. Click on the Arrow and Press <Edit...>
+
+6. Then paste this: B:\Trunk2016\Contribs\openssl\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);
+
+(And If it still has an Error (aka 1 Error) )
+
+
+1. Right Click Libcurl and Press Properties
+
+2. Look at the top-left corner of the Properties window. Make sure it says Configuration: Release and Platform: Win32
+
+3. On the left sidebar menu, expand Linker and click directly on General
+
+6. Look on the right hand panel for the line named Additional Library Directories
+
+7. Click inside that text field, click the tiny dropdown arrow on the far right edge of that line, and select <Edit...>
+
+8. Inside the small editor box, look for any lines starting with C:\Users\<yourname>\... and delete them completely.
+
+9. Click the New Line icon (folder with a star) in the top right corner.
+
+10: Copy and paste this exact direct path string pointing to your real D drive OpenSSL binaries instead:
+D:\Trunk2016\Contribs\openssl\out32
+
+(if it Fails)
+
+1. Right-click on libcurl in your Solution Explorer sidebar on the right and select Properties
+
+2. Verify the top-left dropdown is still set to Active(DLL Release - DLL OpenSSL) and Active(Win32)
+
+3. On the left sidebar menu under Linker, click directly on Input (it sits right beneath General).
+
+4. Look on the right-hand panel for the very top setting named exactly: Additional Dependencies
+
+5. Click inside that text field, click the tiny dropdown arrow on the far right edge of that line, and select <Edit...>
+
+5. Paste this: ws2_32.lib;wldap32.lib;$(SolutionDir)Contribs\openssl\out32\libeay32.lib;$(SolutionDir)Contribs\openssl\out32\ssleay32.lib;%(AdditionalDependencies)
+
+
+(Then Proceed to Build the Others)
+
+Extra:
+
+if libcurl Fails "failed to input libeay32.lib"
+
+1. Change the Configuration type to Dynamic Library (dll)
+
+2. Go to Linker > General
+
+3. Click the Edit button on Additional Library Directories
+
+4. Paste your direct path pointing straight to your OpenSSL folder on your new drive: 
+B:\Trunk2016\Contribs\openssl\out32
+
+5. Edit Additional Dependencies and Paste this: ws2_32.lib;wldap32.lib;$(SolutionDir)Contribs\openssl\out32\libeay32.lib;$(SolutionDir)Contribs\openssl\out32\ssleay32.lib;%(AdditionalDependencies)
+
+(Clean it Then Build it)
+
+sgCore Errors:
+
+1. In the Solution Explorer on the right, right-click the sgCore project and select Properties.
+
+2. At the top of the properties window, set the Configuration dropdown to All Configurations (so it applies to both Debug and Release).
+
+3. Navigate to Configuration Properties > C/C++ > Preprocessor.
+
+4. Click on the text box next to Preprocessor Definitions, click the small dropdown arrow that appears on the right edge, and select <Edit...>.
+
+5. Go to the bottom of the list, add a new line, and paste this exact macro:
+WINDOWS_IGNORE_PACKING_MISMATCH
+
+it should look like this:
+WIN32;NDEBUG;sgCore_API;WINDOWS_IGNORE_PACKING_MISMATCH
+;%(PreprocessorDefinitions)
