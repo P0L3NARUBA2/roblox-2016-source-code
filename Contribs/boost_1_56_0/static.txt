@@ -1,0 +1,1 @@
+b2 toolset=msvc-11.0 variant=debug link=static threading=multi runtime-link=static

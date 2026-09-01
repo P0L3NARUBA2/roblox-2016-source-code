@@ -1,0 +1,204 @@
+export SYSROOT=$ANDROID_NDK/platforms/android-21/arch-arm
+export PATH=$ANDROID_NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/bin:$PATH
+ 
+export CC="arm-linux-androideabi-gcc --sysroot=$SYSROOT"
+export CXX="arm-linux-androideabi-g++ --sysroot=$SYSROOT"
+export LDFLAGS="-L$SYSROOT/usr/lib -L$ANDROID_NDK/sources/cxx-stl/gnu-libstdc++/4.9/libs/armeabi-v7a"
+export CPPFLAGS="-I$SYSROOT/usr/include"
+ 
+make distclean 2>/dev/null; rm -f config.cache
+ 
+./configure --host=arm-linux-androideabi --prefix=/mnt/h/Contribs/curl --with-ssl=/mnt/h/Contribs/openssl --enable-static --disable-shared --without-zlib
+ 
+make
+
+# 1. Add cross compiler to PATH
+export PATH=/h/android-ndk-r10e-windows-x86_64/android-ndk-r10e/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/bin:$PATH
+ 
+# 2. Fix ALL shell scripts at once
+find . -name "*.sh" -o -name "configure" -o -name "config.sub" -o -name "config.guess" -o -name "missing" -o -name "depcomp" -o -name "ltmain.sh" 2>/dev/null | while read f; do
+    tr -d '\r' < "$f" > "$f.tmp" && mv "$f.tmp" "$f" && chmod +x "$f"
+done
+ 
+# 3. Reconfigure
+./configure --host=arm-linux-androideabi \
+    --prefix=/mnt/h/Contribs/curl \
+    --with-ssl=/mnt/h/Contribs/openssl \
+    --enable-static \
+    --disable-shared \
+    --without-zlib
+
+# Clean first
+make distclean 2>/dev/null || true
+ 
+# Reconfigure for Android ARM with proper SSL backend (e.g., OpenSSL)
+./configure --host=arm-linux-androideabi \
+    --with-ssl=/path/to/openssl \
+    --without-winssl \
+    --without-schannel \
+    --enable-shared \
+    --enable-static \
+    --prefix=/mnt/h/Contribs/android/arm/curl/install
+ 
+make
+export CC=arm-linux-androideabi-gcc
+export CXX=arm-linux-androideabi-g++
+export AR=arm-linux-androideabi-ar
+export STRIP=arm-linux-androideabi-strip
+ 
+./configure --host=arm-linux-androideabi \
+    --target=arm-linux-androideabi \
+    --prefix=/mnt/h/Contribs/android/arm/curl/install \
+    --with-ssl=/path/to/android/openssl \
+    --disable-shared \
+    --enable-static \
+    --disable-ftp \
+    --disable-file \
+    --disable-ldap \
+    --disable-ldaps \
+    --disable-rtsp \
+    --disable-dict \
+    --disable-telnet \
+    --disable-tftp \
+    --disable-pop3 \
+    --disable-imap \
+    --disable-smtp \
+    --without-libidn \
+    --without-librtmp \
+    --without-schannel \
+    --without-winssl \
+    --without-darwinssl \
+    CFLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -mthumb" \
+    CXXFLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -mthumb"
+ 
+make && make install
+
+$ANDROID_NDK/build/tools/make-standalone-toolchain.sh \
+    --arch=arm --platform=android-21 --install-dir=/tmp/android-toolchain
+ 
+export PATH=/tmp/android-toolchain/bin:$PATH
+export SYSROOT=/tmp/android-toolchain/sysroot
+ 
+./configure --host=arm-linux-androideabi \
+    --prefix=/mnt/h/Contribs/android/arm/curl/install \
+    --with-ssl=$SYSROOT/usr \
+    --disable-shared --enable-static \
+    --without-winssl --without-schannel
+
+
+# Use the Linux NDK binaries, not Windows ones
+export NDK=/mnt/h/android-ndk-r10e-linux-x86_64/android-ndk-r10e
+ 
+# Create standalone toolchain
+$NDK/build/tools/make-standalone-toolchain.sh \
+    --arch=arm \
+    --platform=android-21 \
+    --toolchain=arm-linux-androideabi-4.9 \
+    --install-dir=/tmp/android-toolchain \
+    --system=linux-x86_64
+ 
+# Verify
+ls /tmp/android-toolchain/bin/arm-linux-androideabi-gcc
+
+
+
+cd /mnt/h/Contribs/android/arm/curl/curl-7.43.0
+ 
+# Clean previous attempts
+make distclean 2>/dev/null; rm -rf config.status config.cache
+ 
+# Set up NDK paths
+export NDK=$HOME/android-ndk-r10e
+export SYSROOT=$NDK/platforms/android-21/arch-arm
+export TOOLCHAIN=$NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64
+ 
+# Set compilers
+export CC="$TOOLCHAIN/bin/arm-linux-androideabi-gcc"
+export CXX="$TOOLCHAIN/bin/arm-linux-androideabi-g++"
+export AR="$TOOLCHAIN/bin/arm-linux-androideabi-ar"
+export LD="$TOOLCHAIN/bin/arm-linux-androideabi-ld"
+export RANLIB="$TOOLCHAIN/bin/arm-linux-androideabi-ranlib"
+export STRIP="$TOOLCHAIN/bin/arm-linux-androideabi-strip"
+ 
+# Set flags
+export CFLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -mthumb -fomit-frame-pointer --sysroot=$SYSROOT"
+export CXXFLAGS="$CFLAGS"
+export LDFLAGS="--sysroot=$SYSROOT"
+ 
+# Configure
+./configure \
+    --host=arm-linux-androideabi \
+    --target=arm-linux-androideabi \
+    --prefix=/mnt/h/Contribs/android/arm/curl/install \
+    --with-sysroot=$SYSROOT \
+    --disable-shared \
+    --enable-static \
+    --without-ssl \
+    --without-winssl \
+    --without-schannel \
+    --without-darwinssl \
+    --disable-ftp \
+    --disable-file \
+    --disable-ldap \
+    --disable-ldaps \
+    --disable-rtsp \
+    --disable-dict \
+    --disable-telnet \
+    --disable-tftp \
+    --disable-pop3 \
+    --disable-imap \
+    --disable-smtp \
+    --without-libidn \
+    --disable-netrc \
+    --without-librtmp
+ 
+# Build
+make -j$(nproc)
+make install
+
+
+export PATH=$ANDROID_NDK/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH
+export CC=armv7a-linux-androideabi21-clang
+export CXX=armv7a-linux-androideabi21-clang++
+export AR=llvm-ar
+export AS=llvm-as
+ 
+# Configure curl (NOT perl Configure - use ./configure)
+./configure --host=arm-linux-androideabi \
+    --with-ssl=/mnt/h/Contribs/openssl/install_api21 \
+    --disable-shared --enable-static \
+    --disable-ftp --disable-file --disable-ldap \
+    --disable-rtsp --disable-dict --disable-telnet \
+    --disable-tftp --disable-pop3 --disable-imap \
+    --disable-smb --disable-smtp --disable-gopher \
+    --disable-manual --without-zlib \
+    --disable-netrc \
+    ac_cv_func_getpwuid_r=no \
+    ac_cv_func_getpwuid=no \
+    ac_cv_func_geteuid=no \
+    CFLAGS="-D__ANDROID_API__=21"
+ 
+make -j$(nproc)
+make install
+
+$NDK/build/tools/make-standalone-toolchain.sh \
+    --platform=android-21 \
+    --toolchain=arm-linux-androideabi-4.9 \
+    --install-dir=$HOME/android-toolchain-arm
+# 2. Add the clean standalone toolchain to your PATH
+export PATH=$HOME/android-toolchain-arm/bin:$PATH
+# 3. Set standard compilers
+export CC="arm-linux-androideabi-gcc"
+export CXX="arm-linux-androideabi-g++"
+export AR="arm-linux-androideabi-ar"
+export LD="arm-linux-androideabi-ld"
+export RANLIB="arm-linux-androideabi-ranlib"
+export STRIP="arm-linux-androideabi-strip"
+# 4. Set flags (Android 21+ requires PIE for executables)
+export CFLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -mthumb -fomit-frame-pointer -fPIE -pie"
+export CXXFLAGS="$CFLAGS"
+export LDFLAGS="-fPIE -pie"
+sed -i 's/#define HAVE_GETPWUID_R 1/#undef HAVE_GETPWUID_R/' lib/curl_config.h
+sed -i 's/#define HAVE_GETEUID 1/#undef HAVE_GETEUID/' lib/curl_config.h
+sed -i 's/#define HAVE_GETPWUID 1/#undef HAVE_GETPWUID/' lib/curl_config.h
+make install DESTDIR=$(pwd)/android-build

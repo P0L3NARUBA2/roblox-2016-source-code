@@ -1,0 +1,2 @@
+#TargetFrameworkVersion=:PlatformToolSet=v140:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=10.0.10240.0
+LIB Release - LIB OpenSSL|Win32|G:\Newfolder\roblox-2016-source-code\Contribs\windows\UWP\curl\projects\Windows\VC14\|

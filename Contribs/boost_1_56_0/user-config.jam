@@ -1,0 +1,24 @@
+import option ;
+using msvc ;
+
+using msvc : 11.0durango : "C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\amd64\cl.exe"
+    :
+    <architecture>x86
+    <address-model>64
+    <cxxflags>/D"RBX_PLATFORM_WIN_DURANGO"
+    <cxxflags>/D"BOOST_CXX11_NO_DELETED_FUNCTIONS"
+    <cxxflags>/D"_CRT_SECURE_NO_WARNINGS"
+    <cxxflags>/D"ZLIB_WINAPI"
+    <cxxflags>/D"WIN32"
+    <cxxflags>/D"_WIN32_WINNT=0x0603"
+    <cxxflags>/arch:AVX
+    <cxxflags>/GS-
+    <cxxflags>/I"$(Console_SdkIncludeRoot)um"
+    <cxxflags>/I"$(Console_SdkIncludeRoot)shared"
+    <cxxflags>/I"$(Console_SdkIncludeRoot)winrt"
+    <linkflags>/LIBPATH:"$(Console_SdkLibPath)"
+    <linkflags>/MACHINE:X64
+    ;
+
+option.set keep-going : false ;
+option.set jobs : 4 ;
