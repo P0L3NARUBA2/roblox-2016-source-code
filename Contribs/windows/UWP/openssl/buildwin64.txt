@@ -1,4 +1,0 @@
-nmake distclean
-perl Configure VC-WIN64A no-shared no-asm no-ui no-async -DOPENSSL_SYS_WINRT -DUNICODE -D_UNICODE --prefix=%CD%\WIN64_UWP
-nmake
-nmake build_libs if you prefer
