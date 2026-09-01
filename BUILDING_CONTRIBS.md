@@ -1,38 +1,8 @@
 # Cookbook for CONTRIBS:
 
-## Qt (Optional to build)
-1. Install [Qt.7z](https://drive.google.com/file/d/10zhRv421d2DUdF7eV-dqR4cIDTZAhiDL/view?usp=drive_link) and extract it into **Contribs** folder
-2. Open **VS2012 x86 Native Tools Command Prompt**
-3. Change Directory (cd) to: `Trunk2016\Contribs\Qt\4.8.5\win_VS2012`
-4. Run the following command:
-```sh
-configure -make nmake -platform win32-msvc2012 -prefix C:\Trunk2016\Contribs\Qt\4.8.5\win_VS2012 -opensource -confirm-license -opengl desktop -nomake examples -nomake tests -webkit -xmlpatterns
-```
-5. When the configuration completes, type **nmake** and take a long breath since it will take a lot of time.
- 
-## Boost
-1. Run the **bootstrap.bat**
-2. After the command is done, run **build_boost.bat** and it will start compiling.
-
-- If you get any errors about Python, do not worry, this will not affect the compilation.
-
-You should greeted with these lines:
-
-```
-...failed updating 56 targets...
-...skipped 8 targets...
-...updated 1095 targets...
-```
-
-## OpenSSL
-1. Install [Strawberry Perl](https://strawberryperl.com/)
-2. Open **Developer Command Prompt for VS2012**
-3. Change Directory to: **`Trunk2016\Contribs\openssl`**
-4. Type **`perl Configure VC-WIN32`**
-5. And then type this to the command prompt: **`ms\32all.bat`**
-6. Create a new folder named **openssl** inside **Trunk2016**
-7. When the build process completes, go inside **`Contribs\openssl\out32dll`**, and copy these 2 files to **Trunk2016\openssl**: **`ssleay32.dll, libeay32.dll`**.
-
+## You Don't need to Build the Contribs Folder Anymore cuz i Replaced it with a Fixed And Prebuilt version, Follow these Steps Instead:
+1. Create a new folder named openssl inside Trunk2016
+2. When the build process completes, go inside Contribs\openssl\out32dll, and copy these 2 files to Trunk2016\openssl: ssleay32.dll, libeay32.dll.
 ## SDL2
 To build SDL2 as a .DLL file, just change the **Target Extension** to **.dll** and **Configuration Type** to **Dynamic Library (.dll)**, remove the **HAVE_LIBC** preprocessor from the properties and build it!<br>
 However if you want to build as .LIB, then you dont have to change anything just build it.
